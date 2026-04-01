@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Founder's Strategy Atlas</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080808;
+  --s1: #0f0f0f;
+  --s2: #161616;
+  --s3: #1e1e1e;
+  --border: #202020;
+  --border2: #2a2a2a;
+  --accent: #e8ff40;
+  --accent2: #ff5533;
+  --accent3: #40c4ff;
+  --green: #4cff91;
+  --purple: #c4a0ff;
+  --text: #f0ede6;
+  --muted: #555;
+  --dim: #2e2e2e;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.view{display:none}.view.active{display:block}
+
+/* ── TOPBAR ── */
+.topbar{position:sticky;top:0;z-index:300;background:rgba(8,8,8,0.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:54px;display:flex;align-items:center;padding:0 18px;gap:12px}
+.tb-back{width:32px;height:32px;border:1px solid var(--border2);border-radius:50%;background:none;color:var(--text);font-size:15px;cursor:pointer;display:none;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
+.tb-back:active{background:var(--s3)}
+.tb-back.show{display:flex}
+.tb-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;letter-spacing:2.5px;color:var(--accent);flex:1;text-transform:uppercase}
+.tb-biz{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
+
+/* ── ONBOARDING / HOME ── */
+.onboard{padding:32px 20px 0}
+.onboard-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--accent2);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.onboard-eyebrow::before{content:'◆';font-size:7px}
+.onboard-h1{font-family:'Syne',sans-serif;font-weight:800;font-size:36px;line-height:.9;letter-spacing:-.5px;margin-bottom:12px}
+.onboard-h1 em{font-style:normal;color:var(--accent)}
+.onboard-body{font-size:12px;color:var(--muted);line-height:1.75;max-width:290px;margin-bottom:28px}
+
+/* BIZ INPUT */
+.biz-input-wrap{position:relative;margin-bottom:10px}
+.biz-input{width:100%;background:var(--s1);border:1.5px solid var(--border2);border-radius:14px;padding:16px 52px 16px 18px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color .2s;-webkit-appearance:none}
+.biz-input::placeholder{color:var(--muted)}
+.biz-input:focus{border-color:var(--accent)}
+.biz-input-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none}
+.biz-hint{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;padding:0 4px;margin-bottom:24px}
+
+/* EXAMPLES */
+.examples-label{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;padding:0 2px}
+.examples-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:28px}
+.example-chip{background:var(--s2);border:1px solid var(--border2);border-radius:20px;padding:7px 12px;font-size:11px;color:var(--muted);cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;font-family:'IBM Plex Sans',sans-serif}
+.example-chip:active{background:var(--s3);color:var(--text);border-color:var(--accent)}
+
+/* GO BTN */
+.go-btn{width:100%;background:var(--accent);color:#000;border:none;border-radius:12px;padding:17px;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:background .15s,transform .1s;margin-bottom:8px;-webkit-tap-highlight-color:transparent}
+.go-btn:active{transform:scale(.98);background:#d4e832}
+.go-btn:disabled{background:var(--s3);color:var(--muted);cursor:default}
+.go-sub{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;padding-bottom:32px}
+
+/* ── DOMAIN GRID ── */
+.grid-section{padding:0 12px 48px}
+.grid-label{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;padding:0 8px 12px;display:flex;align-items:center;justify-content:space-between}
+.biz-badge{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--accent);background:rgba(232,255,64,.08);border:1px solid rgba(232,255,64,.2);border-radius:20px;padding:3px 9px;letter-spacing:.5px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.domain-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.domain-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:15px 13px 13px;cursor:pointer;transition:border-color .15s,background .15s;-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden}
+.domain-card:active{background:var(--s2);border-color:var(--border2)}
+.domain-card.new-menu{background:linear-gradient(135deg,#0f140a,#0a0f14);border-color:rgba(232,255,64,.18)}
+.domain-card.new-menu .dc-name{color:var(--accent)}
+.dc-num{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:5px}
+.dc-icon{font-size:19px;margin-bottom:5px;display:block}
+.dc-name{font-family:'Syne',sans-serif;font-weight:700;font-size:13.5px;color:var(--text);line-height:1.15;margin-bottom:3px}
+.dc-meta{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted)}
+.dc-arrow{position:absolute;bottom:12px;right:13px;font-size:11px;color:var(--muted)}
+.new-pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--accent);background:rgba(232,255,64,.1);border-radius:4px;padding:2px 5px;letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+
+/* ── RESULT VIEW ── */
+.result-hero{padding:20px 20px 16px;border-bottom:1px solid var(--border);background:var(--s1)}
+.rh-domain-tag{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--accent2);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.rh-title{font-family:'Syne',sans-serif;font-weight:800;font-size:24px;line-height:1;margin-bottom:6px}
+.rh-profile{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.rh-profile-label{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.rh-profile-val{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.5px}
+.rh-focus{font-size:11.5px;color:var(--muted);font-style:italic;line-height:1.5}
+.rh-count{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);margin-top:6px;letter-spacing:.5px}
+
+/* LOADING */
+.loading-wrap{padding:48px 24px;text-align:center}
+.loading-ring{width:38px;height:38px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:rot .7s linear infinite;margin:0 auto 16px}
+@keyframes rot{to{transform:rotate(360deg)}}
+.loading-msg{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1.5px;margin-bottom:12px;animation:pls 1.5s ease-in-out infinite}
+@keyframes pls{0%,100%{opacity:.3}50%{opacity:1}}
+.loading-biz{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--accent);margin-bottom:4px}
+.loading-domain{font-size:11px;color:var(--muted)}
+
+/* STRATEGY CARDS */
+.strategies-wrap{padding:14px 14px 60px}
+
+.strategy-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden;opacity:0;transform:translateY(10px);transition:opacity .28s,transform .28s}
+.strategy-card.vis{opacity:1;transform:translateY(0)}
+
+.sc-head{padding:13px 14px 10px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:10px}
+.sc-num{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--accent2);letter-spacing:1.5px;padding-top:1px;flex-shrink:0;text-transform:uppercase}
+.sc-tw{flex:1;min-width:0}
+.sc-name{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--text);line-height:1.15;margin-bottom:2px}
+.sc-source{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--accent);letter-spacing:.5px}
+.sc-badge{font-family:'IBM Plex Mono',monospace;font-size:8px;padding:3px 6px;border-radius:5px;letter-spacing:1px;text-transform:uppercase;flex-shrink:0}
+.b-formula{background:rgba(64,196,255,.1);color:var(--accent3);border:1px solid rgba(64,196,255,.2)}
+.b-checklist{background:rgba(76,255,145,.08);color:var(--green);border:1px solid rgba(76,255,145,.2)}
+.b-rule{background:rgba(255,85,51,.1);color:var(--accent2);border:1px solid rgba(255,85,51,.2)}
+.b-framework{background:rgba(232,255,64,.08);color:var(--accent);border:1px solid rgba(232,255,64,.15)}
+.b-model{background:rgba(180,140,255,.1);color:var(--purple);border:1px solid rgba(180,140,255,.2)}
+
+.sc-body{padding:12px 14px}
+.sc-desc{font-size:12px;color:#999;line-height:1.65;margin-bottom:10px}
+
+/* BIZ APPLICATION BLOCK — the key new element */
+.biz-app{background:rgba(232,255,64,.04);border:1px solid rgba(232,255,64,.12);border-radius:10px;padding:12px 13px;margin-bottom:10px}
+.biz-app-label{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.biz-app-label::before{content:'▸';font-size:9px}
+.biz-app-text{font-size:12px;color:#ccc;line-height:1.65}
+
+.formula-block{background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:11px 13px;margin-bottom:10px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent3);line-height:1.6}
+.formula-label{font-size:8px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px}
+.rule-block{background:rgba(255,85,51,.05);border-left:2px solid var(--accent2);border-radius:0 8px 8px 0;padding:10px 12px;margin-bottom:10px;font-size:12px;color:#bbb;line-height:1.6}
+.rule-label{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--accent2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px}
+.checklist-block{margin-bottom:6px}
+.checklist-label{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--green);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:7px}
+.check-item{display:flex;gap:8px;align-items:flex-start;margin-bottom:6px}
+.check-num{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--green);flex-shrink:0;min-width:16px;padding-top:1px}
+.check-text{font-size:12px;color:#aaa;line-height:1.55}
+
+/* BONUS SECTION */
+.bonus-section{margin:0 14px 14px;background:linear-gradient(135deg,#0d1409,#090d14);border:1px solid rgba(64,196,255,.15);border-radius:14px;overflow:hidden}
+.bonus-head{padding:12px 14px 10px;border-bottom:1px solid rgba(64,196,255,.1);display:flex;align-items:center;gap:8px}
+.bonus-icon{font-size:18px}
+.bonus-label{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--accent3);letter-spacing:1.5px;text-transform:uppercase}
+.bonus-sub{font-size:10px;color:var(--muted);margin-top:1px}
+.bonus-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px}
+.bonus-card{background:rgba(255,255,255,.03);border-radius:10px;padding:11px 12px}
+.bonus-card-name{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--text);margin-bottom:4px}
+.bonus-card-text{font-size:11.5px;color:#999;line-height:1.6}
+.bonus-rule{margin-top:6px;background:rgba(64,196,255,.06);border-left:2px solid var(--accent3);padding:7px 10px;border-radius:0 6px 6px 0;font-size:11px;color:#aaa;line-height:1.55}
+
+/* ERROR */
+.error-wrap{margin:16px;background:rgba(255,50,50,.04);border:1px solid rgba(255,50,50,.15);border-radius:14px;padding:24px;text-align:center}
+.error-msg{font-family:'IBM Plex Mono',monospace;font-size:10px;color:#e05a5a;letter-spacing:1px;margin-bottom:14px}
+.retry-btn{background:var(--s3);color:var(--text);border:1px solid var(--border2);border-radius:8px;padding:10px 20px;font-size:12px;cursor:pointer;font-family:'IBM Plex Sans',sans-serif}
+
+/* CHANGE BIZ BAR */
+.change-bar{margin:0 14px 12px;background:var(--s2);border:1px solid var(--border2);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.change-bar:active{background:var(--s3)}
+.change-biz-name{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--accent);flex:1}
+.change-btn-label{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <button class="tb-back" id="back-btn" onclick="goBack()">←</button>
+  <div class="tb-logo" id="tb-logo">FOUNDER'S ATLAS</div>
+  <div class="tb-biz" id="tb-biz">LOGIC ENGINE</div>
+</div>
+
+<!-- ════ VIEW 1: ONBOARDING ════ -->
+<div class="view active" id="v-onboard">
+  <div class="onboard">
+    <div class="onboard-eyebrow">Personalized Strategy Engine · 2026</div>
+    <div class="onboard-h1">WHAT<br>BUSINESS<br>ARE YOU<br><em>BUILDING?</em></div>
+    <div class="onboard-body">Type your business. Every framework, rule, and checklist from 75+ books will be rewritten specifically for your company — not for "founders in general."</div>
+
+    <div class="biz-input-wrap">
+      <input class="biz-input" id="biz-input" type="text" placeholder="e.g. AI Automation Agency" maxlength="80" oninput="onBizInput()" onkeydown="if(event.key==='Enter')goToDomains()">
+      <span class="biz-input-icon">✏️</span>
+    </div>
+    <div class="biz-hint">Be specific — the more precise, the more targeted the output</div>
+
+    <div class="examples-label">Try these examples</div>
+    <div class="examples-row" id="examples-row"></div>
+
+    <button class="go-btn" id="go-btn" onclick="goToDomains()" disabled>SELECT A DOMAIN →</button>
+    <div class="go-sub">16 domains · 192 frameworks · Personalized to your business</div>
+  </div>
+</div>
+
+<!-- ════ VIEW 2: DOMAIN GRID ════ -->
+<div class="view" id="v-domains">
+  <div class="grid-section">
+    <div class="grid-label">
+      <span>SELECT DOMAIN</span>
+      <span class="biz-badge" id="grid-biz-badge"></span>
+    </div>
+    <div class="domain-grid" id="domain-grid"></div>
+  </div>
+</div>
+
+<!-- ════ VIEW 3: RESULTS ════ -->
+<div class="view" id="v-result">
+  <div class="result-hero">
+    <div class="rh-domain-tag" id="rh-tag"></div>
+    <div class="rh-title" id="rh-title"></div>
+    <div class="rh-profile">
+      <span class="rh-profile-label">BUSINESS PROFILE</span>
+      <span class="rh-profile-val" id="rh-biz"></span>
+    </div>
+    <div class="rh-focus" id="rh-focus"></div>
+    <div class="rh-count" id="rh-count"></div>
+  </div>
+  <div id="result-body"></div>
+</div>
+
+<script>
+/* ══════════════════════════
+   CONSTANTS
+══════════════════════════ */
+const EXAMPLES = [
+  "AI Automation Agency",
+  "WantokInvoice (PNG invoicing app)",
+  "Online Tutoring Service",
+  "Freelance Consulting",
+  "E-commerce Store",
+  "SaaS Product",
+  "Restaurant / Food Business",
+  "Real Estate Agency"
+];
+
+const DOMAINS = [
+  {id:1, icon:"📣", name:"Marketing",        focus:"Attention, messaging & market fit",            books:["This Is Marketing","Contagious","Made to Stick","Influence","Building a StoryBrand"]},
+  {id:2, icon:"🤝", name:"Sales",            focus:"Shifting from convincing to problem-solving",   books:["The Psychology of Selling","To Sell Is Human","SPIN Selling","Sell or Be Sold","The Challenger Sale"]},
+  {id:3, icon:"🧩", name:"Product / Offer",  focus:"From idea to irresistible market fit",          books:["The Lean Startup","$100M Offers","Value Proposition Design","Zero to One","Hooked"]},
+  {id:4, icon:"💰", name:"Finance",          focus:"Cash flow management & wealth preservation",    books:["Profit First","The Intelligent Investor","Financial Intelligence","Rich Dad Poor Dad","Simple Numbers"]},
+  {id:5, icon:"⚙️", name:"Operations",       focus:"Removing the founder as the bottleneck",        books:["The E-Myth Revisited","Atomic Habits","Traction","The Goal","Work the System"]},
+  {id:6, icon:"❤️", name:"Customer Success", focus:"Turn buyers into loyal advocates",              books:["Never Lose a Customer Again","The Effortless Experience","Customer Success","Hug Your Haters","Delivering Happiness"]},
+  {id:7, icon:"👥", name:"HR & People",      focus:"Who to hire & how to build culture",            books:["Who","The Ideal Team Player","Work Rules!","Drive","First Break All the Rules"]},
+  {id:8, icon:"♟️", name:"Strategy",         focus:"Long-range competitive positioning",            books:["Good to Great","Blue Ocean Strategy","Playing to Win","7 Powers","Measure What Matters"]},
+  {id:9, icon:"⚖️", name:"Legal",            focus:"Protect your business, avoid costly mistakes",  books:["Venture Deals","The Entrepreneur's Guide to Law","Business Law Basics","Legal Guide for Small Business","The Pocket MBA"]},
+  {id:10,icon:"💻", name:"Technology",       focus:"Build products, manage dev, ship faster",       books:["The Lean Product Playbook","Inspired","Hooked","Sprint","The Phoenix Project"]},
+  {id:11,icon:"🚚", name:"Supply Chain",     focus:"Source, move & manage products end-to-end",     books:["The Goal","Supply Chain Mgmt For Dummies","The Everything Store","Operations Management","Logistics & Supply Chain Mgmt"]},
+  {id:12,icon:"🔗", name:"Partnerships",     focus:"Strategic alliances & co-creation models",      books:["The Partnership Charter","Never Eat Alone","Give and Take","Strategic Alliances","Co-Opetition"]},
+  {id:13,icon:"🏷️", name:"Branding",         focus:"Define, position & own a brand people choose",  books:["Positioning","How Brands Grow","Brand Gap","Start with Why","Building Strong Brands"]},
+  {id:14,icon:"📊", name:"Data & Analytics", focus:"Measure the right things, decide faster",       books:["Lean Analytics","Measure What Matters","Competing on Analytics","Data Science for Business","Naked Statistics"]},
+  {id:15,icon:"🦁", name:"Leadership",       focus:"Lead yourself, your team & your organization",  books:["Leaders Eat Last","Extreme Ownership","The 5 Levels of Leadership","High Output Management","Dare to Lead"]},
+  {id:16,icon:"🤖", name:"Open Market 2026", focus:"Agentic AI, frugal ops & tribal networking",    books:["AI Workforce Trends 2026","Model Context Protocol","Profitable AI Models 2026","$100M Leads (Updated)","Circular Economy Strategy"],isNew:true}
+];
+
+let bizName = "";
+let currentDomain = null;
+let currentView = "onboard";
+
+/* ══════════════════════════
+   INIT
+══════════════════════════ */
+function init() {
+  // Examples
+  const row = document.getElementById("examples-row");
+  EXAMPLES.forEach(e => {
+    const chip = document.createElement("div");
+    chip.className = "example-chip";
+    chip.textContent = e;
+    chip.onclick = () => {
+      document.getElementById("biz-input").value = e;
+      onBizInput();
+    };
+    row.appendChild(chip);
+  });
+
+  // Domain grid
+  const grid = document.getElementById("domain-grid");
+  DOMAINS.forEach(d => {
+    const card = document.createElement("div");
+    card.className = "domain-card" + (d.isNew ? " new-menu" : "");
+    card.innerHTML = `
+      <div class="dc-num">${String(d.id).padStart(2,"0")}</div>
+      <span class="dc-icon">${d.icon}</span>
+      <div class="dc-name">${d.name}</div>
+      <div class="dc-meta">5 books · personalized</div>
+      ${d.isNew ? '<span class="new-pill">2026</span>' : ""}
+      <span class="dc-arrow">›</span>`;
+    card.onclick = () => openDomain(d);
+    grid.appendChild(card);
+  });
+}
+
+/* ══════════════════════════
+   INPUT HANDLING
+══════════════════════════ */
+function onBizInput() {
+  const val = document.getElementById("biz-input").value.trim();
+  const btn = document.getElementById("go-btn");
+  btn.disabled = val.length < 3;
+}
+
+function goToDomains() {
+  const val = document.getElementById("biz-input").value.trim();
+  if (val.length < 3) return;
+  bizName = val;
+  document.getElementById("grid-biz-badge").textContent = bizName;
+  document.getElementById("tb-biz").textContent = bizName;
+  showView("v-domains");
+  document.getElementById("back-btn").classList.add("show");
+  document.getElementById("tb-logo").textContent = "ATLAS";
+  currentView = "domains";
+  window.scrollTo(0, 0);
+}
+
+/* ══════════════════════════
+   OPEN DOMAIN → EXTRACT
+══════════════════════════ */
+function openDomain(d) {
+  currentDomain = d;
+  currentView = "result";
+
+  document.getElementById("rh-tag").textContent = `DOMAIN ${String(d.id).padStart(2,"0")} · ${d.name.toUpperCase()}`;
+  document.getElementById("rh-title").textContent = d.name;
+  document.getElementById("rh-biz").textContent = bizName;
+  document.getElementById("rh-focus").textContent = `"${d.focus} — applied to ${bizName}"`;
+  document.getElementById("rh-count").textContent = "Extracting personalized frameworks...";
+  document.getElementById("tb-biz").textContent = d.name;
+
+  const body = document.getElementById("result-body");
+  body.innerHTML = `
+    <div class="loading-wrap">
+      <div class="loading-ring"></div>
+      <div class="loading-msg">PERSONALIZING FOR</div>
+      <div class="loading-biz">${bizName}</div>
+      <div class="loading-domain">${d.name} · ${d.books.length} source books</div>
+    </div>`;
+
+  showView("v-result");
+  window.scrollTo(0, 0);
+
+  extractPersonalized(d, bizName);
+}
+
+/* ══════════════════════════
+   AI EXTRACTION
+══════════════════════════ */
+async function extractPersonalized(domain, biz) {
+  const systemPrompt = `You are a business strategy extraction engine for first-time founders.
+
+Your ONLY job: extract strategies from the source books and rewrite every application specifically for the user's exact business.
+
+STRICT OUTPUT RULES:
+- Return ONLY a valid JSON object. Zero text outside it.
+- No markdown fences. No preamble. No author biographies.
+- No generic advice. Every word must be specific to the business named.
+- No summaries. Only frameworks, formulas, decision rules, checklists, models.
+- Every "application" field must name the business explicitly and give concrete, specific actions.
+
+JSON schema:
+{
+  "focus": "one sentence: the specific challenge this domain solves for this business",
+  "strategies": [
+    {
+      "num": "01",
+      "type": "formula|checklist|rule|framework|model",
+      "name": "FRAMEWORK NAME IN CAPS (4-7 words)",
+      "source": "exact book title",
+      "desc": "one sentence: what this framework does",
+      "formula": "the actual formula/model/flow if type is formula or framework — empty string otherwise",
+      "rule": "the decision rule in one sentence — empty string if not applicable",
+      "checklist": ["step 1", "step 2", "step 3", "step 4"],
+      "application": "2-3 sentences applying this SPECIFICALLY to the named business. Name the business explicitly. Give concrete actions, not generic advice."
+    }
+  ],
+  "bonus": [
+    {
+      "name": "BONUS STRATEGY NAME",
+      "text": "specific execution play for this business",
+      "rule": "the specific decision rule or action trigger"
+    }
+  ]
+}
+
+Rules:
+- Extract 8-10 strategies. Cover all 5 books — at least 1 per book.
+- Include 2-3 bonus strategies that are specific to the business type and 2026 market context.
+- The "application" field is the most important field. Make it surgical and specific.
+- Vary types: mix formulas, checklists, rules, frameworks, models.
+- Bonus strategies should be cutting-edge, current, and deeply specific to the business.`;
+
+  const userPrompt = `Business: ${biz}
+Domain: ${domain.name}
+Focus: ${domain.focus}
+Source books: ${domain.books.join(", ")}
+
+Extract 8-10 personalized strategies from these books, each rewritten specifically for ${biz}. Include 2-3 bonus strategies that go beyond the books and apply 2026 market context to ${biz}.`;
+
+  try {
+    const resp = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{role: "user", content: userPrompt}]
+      })
+    });
+
+    const data = await resp.json();
+    const raw = data.content.map(i => i.text || "").join("");
+    const clean = raw.replace(/```json|```/g, "").trim();
+    const result = JSON.parse(clean);
+    renderResult(result, domain, biz);
+
+  } catch(e) {
+    document.getElementById("result-body").innerHTML = `
+      <div class="error-wrap">
+        <div class="error-msg">EXTRACTION FAILED — CHECK CONNECTION</div>
+        <button class="retry-btn" onclick="openDomain(currentDomain)">RETRY</button>
+      </div>`;
+    document.getElementById("rh-count").textContent = "Error — tap Retry";
+  }
+}
+
+/* ══════════════════════════
+   RENDER
+══════════════════════════ */
+function renderResult(result, domain, biz) {
+  const body = document.getElementById("result-body");
+  body.innerHTML = "";
+  document.getElementById("rh-focus").textContent = result.focus || `"${domain.focus} — applied to ${biz}"`;
+  document.getElementById("rh-count").textContent = `${result.strategies.length} personalized frameworks · ${result.bonus ? result.bonus.length : 0} bonus strategies`;
+
+  // Change business bar
+  const changeBar = document.createElement("div");
+  changeBar.className = "change-bar";
+  changeBar.innerHTML = `<span class="change-biz-name">${biz}</span><span class="change-btn-label">Change business ↗</span>`;
+  changeBar.onclick = changeBusiness;
+  body.appendChild(changeBar);
+
+  // Strategy cards
+  const wrap = document.createElement("div");
+  wrap.className = "strategies-wrap";
+  body.appendChild(wrap);
+
+  result.strategies.forEach((s, i) => {
+    const badgeClass = {formula:"b-formula",checklist:"b-checklist",rule:"b-rule",framework:"b-framework",model:"b-model"}[s.type] || "b-framework";
+
+    let bodyHTML = "";
+    if (s.desc) bodyHTML += `<div class="sc-desc">${s.desc}</div>`;
+    if (s.formula) bodyHTML += `<div class="formula-block"><div class="formula-label">FORMULA / MODEL</div>${s.formula}</div>`;
+    if (s.rule) bodyHTML += `<div class="rule-block"><div class="rule-label">DECISION RULE</div>${s.rule}</div>`;
+    if (s.checklist && s.checklist.length) {
+      bodyHTML += `<div class="checklist-block"><div class="checklist-label">EXECUTION CHECKLIST</div>`;
+      s.checklist.forEach((item, ci) => {
+        bodyHTML += `<div class="check-item"><span class="check-num">${String(ci+1).padStart(2,"0")}</span><span class="check-text">${item}</span></div>`;
+      });
+      bodyHTML += `</div>`;
+    }
+    if (s.application) {
+      bodyHTML += `<div class="biz-app"><div class="biz-app-label">APPLIED TO ${biz.toUpperCase()}</div><div class="biz-app-text">${s.application}</div></div>`;
+    }
+
+    const card = document.createElement("div");
+    card.className = "strategy-card";
+    card.innerHTML = `
+      <div class="sc-head">
+        <span class="sc-num">${s.num || String(i+1).padStart(2,"0")}</span>
+        <div class="sc-tw">
+          <div class="sc-name">${s.name}</div>
+          <div class="sc-source">↳ ${s.source}</div>
+        </div>
+        <span class="sc-badge ${badgeClass}">${s.type.toUpperCase()}</span>
+      </div>
+      <div class="sc-body">${bodyHTML}</div>`;
+    wrap.appendChild(card);
+    setTimeout(() => card.classList.add("vis"), i * 55);
+  });
+
+  // Bonus section
+  if (result.bonus && result.bonus.length) {
+    const bonusEl = document.createElement("div");
+    bonusEl.className = "bonus-section";
+    bonusEl.innerHTML = `
+      <div class="bonus-head">
+        <span class="bonus-icon">⚡</span>
+        <div>
+          <div class="bonus-label">2026 OPEN MARKET PLAYS</div>
+          <div class="bonus-sub">Beyond the books — specific to ${biz}</div>
+        </div>
+      </div>
+      <div class="bonus-body" id="bonus-body"></div>`;
+    body.appendChild(bonusEl);
+
+    const bonusBody = bonusEl.querySelector("#bonus-body");
+    result.bonus.forEach(b => {
+      const bc = document.createElement("div");
+      bc.className = "bonus-card";
+      bc.innerHTML = `
+        <div class="bonus-card-name">${b.name}</div>
+        <div class="bonus-card-text">${b.text}</div>
+        ${b.rule ? `<div class="bonus-rule">▸ ${b.rule}</div>` : ""}`;
+      bonusBody.appendChild(bc);
+    });
+
+    setTimeout(() => {
+      bonusEl.style.opacity = "0";
+      bonusEl.style.transform = "translateY(12px)";
+      bonusEl.style.transition = "opacity .3s, transform .3s";
+      setTimeout(() => {
+        bonusEl.style.opacity = "1";
+        bonusEl.style.transform = "translateY(0)";
+      }, result.strategies.length * 55 + 100);
+    }, 0);
+  }
+}
+
+/* ══════════════════════════
+   NAVIGATION
+══════════════════════════ */
+function showView(id) {
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function goBack() {
+  if (currentView === "result") {
+    currentView = "domains";
+    showView("v-domains");
+    document.getElementById("tb-biz").textContent = bizName;
+    document.getElementById("tb-logo").textContent = "ATLAS";
+    window.scrollTo(0, 0);
+  } else if (currentView === "domains") {
+    currentView = "onboard";
+    showView("v-onboard");
+    document.getElementById("back-btn").classList.remove("show");
+    document.getElementById("tb-logo").textContent = "FOUNDER'S ATLAS";
+    document.getElementById("tb-biz").textContent = "LOGIC ENGINE";
+    window.scrollTo(0, 0);
+  }
+}
+
+function changeBusiness() {
+  currentView = "onboard";
+  showView("v-onboard");
+  document.getElementById("back-btn").classList.remove("show");
+  document.getElementById("tb-logo").textContent = "FOUNDER'S ATLAS";
+  document.getElementById("tb-biz").textContent = "LOGIC ENGINE";
+  document.getElementById("biz-input").value = bizName;
+  document.getElementById("biz-input").focus();
+  window.scrollTo(0, 0);
+}
+
+init();
+</script>
+</body>
+</html>
