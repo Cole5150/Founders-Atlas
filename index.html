@@ -342,82 +342,63 @@ function openDomain(d) {
    AI EXTRACTION
 ══════════════════════════ */
 async function extractPersonalized(domain, biz) {
-  const systemPrompt = `You are a business strategy extraction engine for first-time founders.
+  // 1. Simulate "Thinking" time (1.5 seconds)
+  await new Promise(resolve => setTimeout(resolve, 1500));
 
-Your ONLY job: extract strategies from the source books and rewrite every application specifically for the user's exact business.
+  // 2. Generate a "Mock" response based on the domain and business
+  // This mimics the exact JSON schema your UI expects
+  const mockResult = {
+    "focus": `Optimizing ${domain.name} systems to scale ${biz} in the 2026 market.`,
+    "strategies": [
+      {
+        "num": "01",
+        "type": "formula",
+        "name": "THE VALUE EQUATION MAXIMIZER",
+        "source": "$100M Offers",
+        "desc": "Quantifying the perceived value of your offer.",
+        "formula": "Value = (Outcome x Likelihood) / (Time x Effort)",
+        "rule": "Decrease time-to-result to exponentially increase price.",
+        "checklist": [],
+        "application": `For ${biz}, reduce the 'Time Delay' by offering an instant automated audit. This makes the 'Dream Outcome' feel immediate to your PNG clients.`
+      },
+      {
+        "num": "02",
+        "type": "checklist",
+        "name": "THE E-MYTH PROTOTYPE ALIGNMENT",
+        "source": "The E-Myth Revisited",
+        "desc": "Building systems so the business runs without you.",
+        "rule": "",
+        "checklist": [
+          "Document the 'Primary Objective'", 
+          "Create the Strategic Plan", 
+          "Write the Operations Manual", 
+          "Recruit based on System-Fit"
+        ],
+        "application": `Stop 'doing' the work for ${biz}. Create a manual for how the AI handles the first 80% of tasks so you can focus on high-level partnerships.`
+      },
+      {
+        "num": "03",
+        "type": "rule",
+        "name": "THE PROFIT FIRST ALLOCATION",
+        "source": "Profit First",
+        "desc": "Ensuring the business is profitable from day one.",
+        "formula": "",
+        "rule": "Move 5% of every payment into a 'Profit' account before paying any bills.",
+        "checklist": [],
+        "application": `Every time a client pays ${biz}, immediately move 5% to a separate account. This guarantees that ${biz} stays healthy regardless of overhead.`
+      }
+    ],
+    "bonus": [
+      {
+        "name": "AGENTIC WORKFLOW 2026",
+        "text": `Deploy a 'Reasoning Agent' to handle ${biz} client inquiries.`,
+        "rule": "Only escalate to a human if the sentiment analysis hits 'Frustrated'."
+      }
+    ]
+  };
 
-STRICT OUTPUT RULES:
-- Return ONLY a valid JSON object. Zero text outside it.
-- No markdown fences. No preamble. No author biographies.
-- No generic advice. Every word must be specific to the business named.
-- No summaries. Only frameworks, formulas, decision rules, checklists, models.
-- Every "application" field must name the business explicitly and give concrete, specific actions.
-
-JSON schema:
-{
-  "focus": "one sentence: the specific challenge this domain solves for this business",
-  "strategies": [
-    {
-      "num": "01",
-      "type": "formula|checklist|rule|framework|model",
-      "name": "FRAMEWORK NAME IN CAPS (4-7 words)",
-      "source": "exact book title",
-      "desc": "one sentence: what this framework does",
-      "formula": "the actual formula/model/flow if type is formula or framework — empty string otherwise",
-      "rule": "the decision rule in one sentence — empty string if not applicable",
-      "checklist": ["step 1", "step 2", "step 3", "step 4"],
-      "application": "2-3 sentences applying this SPECIFICALLY to the named business. Name the business explicitly. Give concrete actions, not generic advice."
-    }
-  ],
-  "bonus": [
-    {
-      "name": "BONUS STRATEGY NAME",
-      "text": "specific execution play for this business",
-      "rule": "the specific decision rule or action trigger"
-    }
-  ]
-}
-
-Rules:
-- Extract 8-10 strategies. Cover all 5 books — at least 1 per book.
-- Include 2-3 bonus strategies that are specific to the business type and 2026 market context.
-- The "application" field is the most important field. Make it surgical and specific.
-- Vary types: mix formulas, checklists, rules, frameworks, models.
-- Bonus strategies should be cutting-edge, current, and deeply specific to the business.`;
-
-  const userPrompt = `Business: ${biz}
-Domain: ${domain.name}
-Focus: ${domain.focus}
-Source books: ${domain.books.join(", ")}
-
-Extract 8-10 personalized strategies from these books, each rewritten specifically for ${biz}. Include 2-3 bonus strategies that go beyond the books and apply 2026 market context to ${biz}.`;
-
-  try {
-    const resp = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        system: systemPrompt,
-        messages: [{role: "user", content: userPrompt}]
-      })
-    });
-
-    const data = await resp.json();
-    const raw = data.content.map(i => i.text || "").join("");
-    const clean = raw.replace(/```json|```/g, "").trim();
-    const result = JSON.parse(clean);
-    renderResult(result, domain, biz);
-
-  } catch(e) {
-    document.getElementById("result-body").innerHTML = `
-      <div class="error-wrap">
-        <div class="error-msg">EXTRACTION FAILED — CHECK CONNECTION</div>
-        <button class="retry-btn" onclick="openDomain(currentDomain)">RETRY</button>
-      </div>`;
-    document.getElementById("rh-count").textContent = "Error — tap Retry";
-  }
+  // 3. Render the mock data
+  renderResult(mockResult, domain, biz);
 }
 
 /* ══════════════════════════
